@@ -61,6 +61,29 @@ const User = sequelize.define('User', {
     otpExpiry: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    licenseNumber: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    licenseExpiry: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+    },
+    dutyStatus: {
+        type: DataTypes.ENUM('on-duty', 'off-duty', 'suspended'),
+        defaultValue: 'off-duty',
+        allowNull: true
+    },
+    safetyScore: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 100
+    },
+    complaints: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
     }
 }, {
     timestamps: true,

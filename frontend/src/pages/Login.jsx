@@ -58,18 +58,18 @@ const Login = () => {
                     <div className="w-16 h-16 mb-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-2xl shadow-blue-500/30 rotate-[-6deg] hover:rotate-0 transition-transform duration-500">
                         <HiOutlineTruck />
                     </div>
-                    <h1 className="text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+                    <h1 className="text-4xl lg:text-5xl font-extrabold text-white mb-3 leading-tight tracking-tight">
                         Manage Your
                         <span className="block bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
                             Fleet Smarter
                         </span>
                     </h1>
-                    <p className="text-lg text-slate-400 leading-relaxed mb-10">
+                    <p className="text-base lg:text-lg text-slate-400 leading-relaxed mb-6">
                         Centralized logistics hub for vehicle lifecycle management, driver safety monitoring, and financial performance tracking.
                     </p>
 
                     {/* Dynamic Feature pills */}
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2.5">
                         {features.map((f) => (
                             <span key={f.text} className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-sm text-slate-300 backdrop-blur-sm hover:bg-white/[0.07] hover:border-white/[0.15] transition-all duration-300 cursor-default">
                                 <span className="text-blue-400">{f.icon}</span>
@@ -78,9 +78,29 @@ const Login = () => {
                         ))}
                     </div>
 
-                    <div className="mt-12 flex items-center gap-3">
+                    {/* Manual Demo Credentials Display */}
+                    <div className="mt-8 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-md">
+                        <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                            Demo Credentials
+                        </h3>
+                        <div className="space-y-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 rounded-lg bg-black/20 border border-white/[0.03]">
+                                <span className="text-[10px] font-medium text-slate-400 w-20 uppercase tracking-widest">Admin</span>
+                                <code className="text-[11px] text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded select-all font-mono">admin.manager@fleetflow.com</code>
+                                <code className="text-[11px] text-slate-300 bg-white/5 px-2 py-0.5 rounded select-all font-mono">admin123</code>
+                            </div>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 rounded-lg bg-black/20 border border-white/[0.03]">
+                                <span className="text-[10px] font-medium text-slate-400 w-20 uppercase tracking-widest">Dispatcher</span>
+                                <code className="text-[11px] text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded select-all font-mono">dispatchers@fleetflow.com</code>
+                                <code className="text-[11px] text-slate-300 bg-white/5 px-2 py-0.5 rounded select-all font-mono">user123</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 flex items-center gap-3">
                         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
-                        <span className="text-xs text-slate-500 uppercase tracking-widest">FleetFlow</span>
+                        <span className="text-[10px] text-slate-500 uppercase tracking-widest">FleetFlow System</span>
                         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
                     </div>
                 </div>
@@ -101,7 +121,27 @@ const Login = () => {
                     {/* Card */}
                     <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/[0.06] rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl">
                         <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Welcome Back</h2>
-                        <p className="text-slate-400 text-xs sm:text-sm mb-6 sm:mb-8">Enter your credentials to access your account</p>
+                        <p className="text-slate-400 text-xs sm:text-sm mb-6">Enter your credentials to access your account</p>
+
+                        {/* Demo Credentials Section */}
+                        <div className="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setForm({ email: 'admin.manager@fleetflow.com', password: 'admin123' })}
+                                className="flex-1 py-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-medium border border-blue-500/30 transition-all text-center"
+                            >
+                                <span className="block mb-1 opacity-80 uppercase tracking-widest text-[10px]">Admin</span>
+                                admin.manager@...
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setForm({ email: 'dispatchers@fleetflow.com', password: 'user123' })}
+                                className="flex-1 py-2 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 text-xs font-medium border border-emerald-500/30 transition-all text-center"
+                            >
+                                <span className="block mb-1 opacity-80 uppercase tracking-widest text-[10px]">Dispatcher</span>
+                                dispatchers@...
+                            </button>
+                        </div>
 
                         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                             <div>
