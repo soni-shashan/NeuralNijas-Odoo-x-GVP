@@ -4,10 +4,12 @@ import { tripAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import {
     HiOutlinePlus, HiOutlineSearch, HiOutlineFilter, HiOutlineX,
-    HiOutlineRefresh, HiOutlineTrash, HiOutlineArrowRight
+    HiOutlineRefresh, HiOutlineTrash, HiOutlineArrowRight, HiOutlineExclamation
 } from 'react-icons/hi';
+import { LuTruck, LuBus, LuBike, LuCar } from 'react-icons/lu';
 
-const typeIcons = { truck: '🚛', van: '🚐', bike: '🏍️' };
+const typeIcons = { truck: <LuTruck className="text-base text-blue-400" />, van: <LuBus className="text-base text-emerald-400" />, bike: <LuBike className="text-base text-violet-400" /> };
+const typeLabels = { truck: 'Truck', van: 'Van', bike: 'Bike' };
 
 const statusStyles = {
     draft: 'bg-slate-500/15 text-slate-400 border-slate-500/20',
@@ -155,11 +157,18 @@ const TripDispatcher = () => {
                             value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             className="w-full py-2.5 pl-10 pr-4 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 transition-all" />
                     </form>
-                    <button onClick={() => setShowFilters(!showFilters)}
-                        className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
-              ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
-                        <HiOutlineFilter /> Filters
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setShowFilters(!showFilters)}
+                            className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
+                  ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
+                            <HiOutlineFilter /> Filters
+                        </button>
+                        {(filters.status || filters.type) && (
+                            <button onClick={() => { setFilters({ search: '', status: '', type: '', page: 1 }); setTimeout(fetchTrips, 50); }} className="px-3 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-all">
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
                 {showFilters && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-3 border-t border-white/[0.06] animate-fade-in">
@@ -174,9 +183,9 @@ const TripDispatcher = () => {
                         <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a]">
                             <option value="">All Vehicle Types</option>
-                            <option value="truck">🚛 Truck</option>
-                            <option value="van">🚐 Van</option>
-                            <option value="bike">🏍️ Bike</option>
+                            <option value="truck">Truck</option>
+                            <option value="van">Van</option>
+                            <option value="bike">Bike</option>
                         </select>
                     </div>
                 )}
@@ -209,7 +218,7 @@ const TripDispatcher = () => {
                                         <td className="px-4 sm:px-6 py-3.5">
                                             {trip.vehicle ? (
                                                 <div className="flex items-center gap-2">
-                                                    <span>{typeIcons[trip.vehicle.type] || '🚗'}</span>
+                                                    <span className="flex items-center">{typeIcons[trip.vehicle.type] || <LuCar className="text-base text-slate-400" />}</span>
                                                     <span className="text-sm text-slate-300">{trip.vehicle.registrationNumber}</span>
                                                 </div>
                                             ) : (
@@ -281,7 +290,7 @@ const TripDispatcher = () => {
                                     <option value="">Choose an available vehicle...</option>
                                     {availableVehicles.map((v) => (
                                         <option key={v.id} value={v.id}>
-                                            {typeIcons[v.type]} {v.registrationNumber} — {v.make} {v.model} ({v.maxLoadCapacity || 0} tons)
+                                            {v.type ? v.type.charAt(0).toUpperCase() + v.type.slice(1) : ''} — {v.registrationNumber} — {v.make} {v.model} ({v.maxLoadCapacity || 0} tons)
                                         </option>
                                     ))}
                                 </select>
@@ -298,8 +307,8 @@ const TripDispatcher = () => {
                                 <input type="number" value={form.cargoWeight} onChange={(e) => setForm({ ...form, cargoWeight: e.target.value })}
                                     placeholder="e.g. 2000" min="0" required className={inputClass} />
                                 {selectedVehicle && form.cargoWeight && (form.cargoWeight / 1000) > (selectedVehicle.maxLoadCapacity || 0) && selectedVehicle.maxLoadCapacity > 0 && (
-                                    <p className="mt-1.5 text-xs text-red-400 font-medium">
-                                        ⚠️ Exceeds max capacity! {form.cargoWeight} kg ({(form.cargoWeight / 1000).toFixed(1)} tons) &gt; {selectedVehicle.maxLoadCapacity} tons
+                                    <p className="mt-1.5 text-xs text-red-400 font-medium flex items-center gap-1">
+                                        <HiOutlineExclamation className="text-sm flex-shrink-0" /> Exceeds max capacity! {form.cargoWeight} kg ({(form.cargoWeight / 1000).toFixed(1)} tons) &gt; {selectedVehicle.maxLoadCapacity} tons
                                     </p>
                                 )}
                             </div>

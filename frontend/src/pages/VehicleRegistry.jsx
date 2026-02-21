@@ -5,8 +5,10 @@ import {
     HiOutlinePlus, HiOutlineSearch, HiOutlineFilter, HiOutlinePencil,
     HiOutlineTrash, HiOutlineX, HiOutlineRefresh, HiOutlineBan, HiOutlineCheckCircle
 } from 'react-icons/hi';
+import { LuTruck, LuBus, LuBike, LuCar } from 'react-icons/lu';
 
-const typeIcons = { truck: '🚛', van: '🚐', bike: '🏍️' };
+const typeIcons = { truck: <LuTruck className="text-base text-blue-400" />, van: <LuBus className="text-base text-emerald-400" />, bike: <LuBike className="text-base text-violet-400" /> };
+const typeLabels = { truck: 'Truck', van: 'Van', bike: 'Bike' };
 
 const statusStyles = {
     available: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
@@ -158,11 +160,18 @@ const VehicleRegistry = () => {
                             value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             className="w-full py-2.5 pl-10 pr-4 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 transition-all" />
                     </form>
-                    <button onClick={() => setShowFilters(!showFilters)}
-                        className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
-              ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
-                        <HiOutlineFilter /> Filters
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setShowFilters(!showFilters)}
+                            className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
+                  ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
+                            <HiOutlineFilter /> Filters
+                        </button>
+                        {(filters.type || filters.status) && (
+                            <button onClick={() => { setFilters({ search: '', type: '', status: '', page: 1 }); setTimeout(fetchVehicles, 50); }} className="px-3 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-all">
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {showFilters && (
@@ -170,9 +179,9 @@ const VehicleRegistry = () => {
                         <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a]">
                             <option value="">All Types</option>
-                            <option value="truck">🚛 Truck</option>
-                            <option value="van">🚐 Van</option>
-                            <option value="bike">🏍️ Bike</option>
+                            <option value="truck">Truck</option>
+                            <option value="van">Van</option>
+                            <option value="bike">Bike</option>
                         </select>
                         <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a]">
@@ -218,7 +227,7 @@ const VehicleRegistry = () => {
                                             {v.year && <p className="text-xs text-slate-500">{v.year}</p>}
                                         </td>
                                         <td className="px-4 sm:px-6 py-3.5">
-                                            <span className="text-sm">{typeIcons[v.type]} <span className="capitalize text-slate-300 hidden sm:inline">{v.type}</span></span>
+                                            <span className="text-sm flex items-center gap-1.5">{typeIcons[v.type] || <LuCar className="text-base text-slate-400" />} <span className="capitalize text-slate-300 hidden sm:inline">{v.type}</span></span>
                                         </td>
                                         <td className="px-4 sm:px-6 py-3.5 hidden md:table-cell">
                                             <span className="text-sm text-slate-300">{v.maxLoadCapacity ? `${v.maxLoadCapacity} tons` : '—'}</span>
@@ -306,9 +315,9 @@ const VehicleRegistry = () => {
                                     <label className="text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">Type <span className="text-red-400">*</span></label>
                                     <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
                                         className={inputClass + ' appearance-none cursor-pointer [&>option]:bg-[#0f172a]'}>
-                                        <option value="truck">🚛 Truck</option>
-                                        <option value="van">🚐 Van</option>
-                                        <option value="bike">🏍️ Bike</option>
+                                        <option value="truck">Truck</option>
+                                        <option value="van">Van</option>
+                                        <option value="bike">Bike</option>
                                     </select>
                                 </div>
                                 <div>
@@ -335,10 +344,10 @@ const VehicleRegistry = () => {
                                 <label className="text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">Fuel Type</label>
                                 <select value={form.fuelType} onChange={(e) => setForm({ ...form, fuelType: e.target.value })}
                                     className={inputClass + ' appearance-none cursor-pointer [&>option]:bg-[#0f172a]'}>
-                                    <option value="diesel">⛽ Diesel</option>
-                                    <option value="petrol">⛽ Petrol</option>
-                                    <option value="electric">⚡ Electric</option>
-                                    <option value="cng">🟢 CNG</option>
+                                    <option value="diesel">Diesel</option>
+                                    <option value="petrol">Petrol</option>
+                                    <option value="electric">Electric</option>
+                                    <option value="cng">CNG</option>
                                 </select>
                             </div>
 

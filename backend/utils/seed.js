@@ -13,6 +13,9 @@ const seedData = async () => {
                 {
                     fullName: 'Admin Demo',
                     email: 'admin.manager@fleetflow.com',
+                    phone: '1234567890',
+                    company: 'FleetFlow Logistics',
+                    department: 'Central Operations',
                     password: adminPassword,
                     role: 'admin',
                     isVerified: true,
@@ -22,6 +25,7 @@ const seedData = async () => {
                 {
                     fullName: 'Dispatcher Demo',
                     email: 'dispatchers@fleetflow.com',
+                    phone: '9876543210',
                     password: dispatcherPassword,
                     role: 'dispatcher',
                     isVerified: true,

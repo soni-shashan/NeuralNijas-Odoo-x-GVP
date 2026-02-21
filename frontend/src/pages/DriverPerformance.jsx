@@ -13,9 +13,9 @@ const dutyStyles = {
 };
 
 const dutyOptions = [
-    { value: 'on-duty', label: 'On Duty', emoji: '🟢' },
-    { value: 'off-duty', label: 'Off Duty', emoji: '🔵' },
-    { value: 'suspended', label: 'Suspended', emoji: '🔴' },
+    { value: 'on-duty', label: 'On Duty' },
+    { value: 'off-duty', label: 'Off Duty' },
+    { value: 'suspended', label: 'Suspended' },
 ];
 
 const getScoreColor = (score) => {
@@ -119,18 +119,25 @@ const DriverPerformance = () => {
                             value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             className="w-full py-2.5 pl-10 pr-4 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 transition-all" />
                     </form>
-                    <button onClick={() => setShowFilters(!showFilters)}
-                        className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
-              ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
-                        <HiOutlineFilter /> Filters
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setShowFilters(!showFilters)}
+                            className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
+                  ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
+                            <HiOutlineFilter /> Filters
+                        </button>
+                        {filters.dutyStatus && (
+                            <button onClick={() => { setFilters({ search: '', dutyStatus: '', page: 1 }); setTimeout(fetchDrivers, 50); }} className="px-3 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-all">
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
                 {showFilters && (
                     <div className="mt-3 pt-3 border-t border-white/[0.06] animate-fade-in">
                         <select value={filters.dutyStatus} onChange={(e) => setFilters({ ...filters, dutyStatus: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a] w-full sm:w-auto">
                             <option value="">All Statuses</option>
-                            {dutyOptions.map(o => <option key={o.value} value={o.value}>{o.emoji} {o.label}</option>)}
+                            {dutyOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                         </select>
                     </div>
                 )}

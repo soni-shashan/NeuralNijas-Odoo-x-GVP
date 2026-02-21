@@ -5,6 +5,7 @@ import {
     HiOutlineRefresh, HiOutlineDownload, HiOutlineTrendingUp,
     HiOutlineCurrencyRupee, HiOutlineChartBar, HiOutlineTruck
 } from 'react-icons/hi';
+import { LuFuel, LuBanknote, LuChartColumnIncreasing } from 'react-icons/lu';
 
 const Analytics = () => {
     const [overview, setOverview] = useState(null);
@@ -119,7 +120,7 @@ const Analytics = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
                 {/* Fuel Efficiency */}
                 <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-                    <h2 className="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">⛽ Fuel Efficiency (km/L)</h2>
+                    <h2 className="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2"><LuFuel className="text-cyan-400" /> Fuel Efficiency (km/L)</h2>
                     {fuelEfficiency.length === 0 ? (
                         <p className="text-sm text-slate-500 text-center py-8">No fuel data yet</p>
                     ) : (
@@ -144,7 +145,7 @@ const Analytics = () => {
 
                 {/* Top 5 Costliest */}
                 <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-                    <h2 className="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">💰 Top 5 Costliest Vehicles</h2>
+                    <h2 className="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2"><LuBanknote className="text-red-400" /> Top 5 Costliest Vehicles</h2>
                     {costliest.length === 0 ? (
                         <p className="text-sm text-slate-500 text-center py-8">No cost data yet</p>
                     ) : (
@@ -171,7 +172,7 @@ const Analytics = () => {
             {/* Financial Summary of Month */}
             <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden">
                 <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
-                    <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">📊 Financial Summary by Month</h2>
+                    <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2"><LuChartColumnIncreasing className="text-indigo-400" /> Financial Summary by Month</h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">

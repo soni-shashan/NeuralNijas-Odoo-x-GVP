@@ -6,17 +6,18 @@ import {
     HiOutlineRefresh, HiOutlineTrash, HiOutlineCheckCircle
 } from 'react-icons/hi';
 import { FiTool } from 'react-icons/fi';
+import { LuWrench, LuCircleDot, LuZap, LuSettings, LuDroplet, LuSearch, LuCar, LuClipboardList, LuShieldAlert } from 'react-icons/lu';
 
 const issueTypes = [
-    { value: 'engine', label: 'Engine Issue', emoji: '🔧' },
-    { value: 'brakes', label: 'Brakes', emoji: '🛑' },
-    { value: 'tires', label: 'Tires', emoji: '🛞' },
-    { value: 'electrical', label: 'Electrical', emoji: '⚡' },
-    { value: 'transmission', label: 'Transmission', emoji: '⚙️' },
-    { value: 'oil-change', label: 'Oil Change', emoji: '🛢️' },
-    { value: 'inspection', label: 'Inspection', emoji: '🔍' },
-    { value: 'bodywork', label: 'Bodywork', emoji: '🚗' },
-    { value: 'other', label: 'Other', emoji: '📋' },
+    { value: 'engine', label: 'Engine Issue', icon: <LuWrench className="text-sm" /> },
+    { value: 'brakes', label: 'Brakes', icon: <LuShieldAlert className="text-sm" /> },
+    { value: 'tires', label: 'Tires', icon: <LuCircleDot className="text-sm" /> },
+    { value: 'electrical', label: 'Electrical', icon: <LuZap className="text-sm" /> },
+    { value: 'transmission', label: 'Transmission', icon: <LuSettings className="text-sm" /> },
+    { value: 'oil-change', label: 'Oil Change', icon: <LuDroplet className="text-sm" /> },
+    { value: 'inspection', label: 'Inspection', icon: <LuSearch className="text-sm" /> },
+    { value: 'bodywork', label: 'Bodywork', icon: <LuCar className="text-sm" /> },
+    { value: 'other', label: 'Other', icon: <LuClipboardList className="text-sm" /> },
 ];
 
 const statusStyles = {
@@ -113,7 +114,7 @@ const Maintenance = () => {
         fetchLogs();
     };
 
-    const getIssueInfo = (type) => issueTypes.find(i => i.value === type) || { emoji: '📋', label: type };
+    const getIssueInfo = (type) => issueTypes.find(i => i.value === type) || { icon: <LuClipboardList className="text-sm" />, label: type };
     const inputClass = "w-full py-2.5 px-3.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all";
 
     if (loading) {
@@ -147,11 +148,18 @@ const Maintenance = () => {
                             value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             className="w-full py-2.5 pl-10 pr-4 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 transition-all" />
                     </form>
-                    <button onClick={() => setShowFilters(!showFilters)}
-                        className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
-              ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
-                        <HiOutlineFilter /> Filters
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setShowFilters(!showFilters)}
+                            className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
+                  ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
+                            <HiOutlineFilter /> Filters
+                        </button>
+                        {(filters.status || filters.issueType) && (
+                            <button onClick={() => { setFilters({ search: '', status: '', issueType: '', page: 1 }); setTimeout(fetchLogs, 50); }} className="px-3 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-all">
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
                 {showFilters && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-3 border-t border-white/[0.06] animate-fade-in">
@@ -165,7 +173,7 @@ const Maintenance = () => {
                         <select value={filters.issueType} onChange={(e) => setFilters({ ...filters, issueType: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a]">
                             <option value="">All Issue Types</option>
-                            {issueTypes.map(t => <option key={t.value} value={t.value}>{t.emoji} {t.label}</option>)}
+                            {issueTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                         </select>
                     </div>
                 )}
@@ -207,7 +215,7 @@ const Maintenance = () => {
                                             </td>
                                             <td className="px-4 sm:px-6 py-3.5">
                                                 <div className="flex items-center gap-2">
-                                                    <span>{issue.emoji}</span>
+                                                    <span className="text-slate-300">{issue.icon}</span>
                                                     <div>
                                                         <p className="text-sm text-slate-300">{issue.label}</p>
                                                         <p className="text-xs text-slate-500 truncate max-w-[200px]">{log.description}</p>
@@ -300,7 +308,7 @@ const Maintenance = () => {
                                 <select value={form.issueType} onChange={(e) => setForm({ ...form, issueType: e.target.value })} required
                                     className={inputClass + ' appearance-none cursor-pointer [&>option]:bg-[#0f172a]'}>
                                     <option value="">Select issue type...</option>
-                                    {issueTypes.map(t => <option key={t.value} value={t.value}>{t.emoji} {t.label}</option>)}
+                                    {issueTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                                 </select>
                             </div>
 

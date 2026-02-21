@@ -7,6 +7,7 @@ import {
     HiOutlineTruck, HiOutlineExclamation, HiOutlineChartBar, HiOutlineCube,
     HiOutlineSearch, HiOutlineFilter, HiOutlinePlus, HiOutlineRefresh
 } from 'react-icons/hi';
+import { LuTruck, LuBus, LuBike, LuCar } from 'react-icons/lu';
 
 const statusColors = {
     'draft': 'bg-slate-500/15 text-slate-400 border-slate-500/20',
@@ -15,7 +16,11 @@ const statusColors = {
     'cancelled': 'bg-red-500/15 text-red-400 border-red-500/20',
 };
 
-const vehicleTypeIcons = { truck: '🚛', van: '🚐', bike: '🏍️' };
+const vehicleTypeIcons = {
+    truck: <LuTruck className="text-sm text-blue-400" />,
+    van: <LuBus className="text-sm text-emerald-400" />,
+    bike: <LuBike className="text-sm text-violet-400" />,
+};
 
 const Dashboard = () => {
     const { user } = useAuth();
@@ -95,15 +100,32 @@ const Dashboard = () => {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
                 {kpiCards.map((kpi) => (
-                    <div key={kpi.label} className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 sm:p-5 overflow-hidden group hover:border-white/[0.1] transition-all duration-300">
-                        <div className={`absolute top-0 right-0 w-24 h-24 ${kpi.bgGlow} rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${kpi.color} flex items-center justify-center text-white text-xl mb-3 shadow-lg`}>
-                            {kpi.icon}
+                    <div key={kpi.label} className="relative bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/[0.05] rounded-[24px] p-5 sm:p-6 overflow-hidden group hover:border-white/[0.15] hover:bg-white/[0.03] transition-all duration-500 hover:shadow-2xl shadow-black/50 hover:-translate-y-1">
+                        {/* Dynamic Glow Effect */}
+                        <div className={`absolute -top-12 -right-12 w-40 h-40 ${kpi.bgGlow.replace('10', '30')} rounded-full blur-[50px] opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none`} />
+
+                        <div className="relative z-10 flex items-center justify-between mb-4">
+                            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${kpi.color} flex items-center justify-center text-white text-2xl sm:text-3xl shadow-lg ring-4 ring-white/[0.02] group-hover:scale-110 transition-transform duration-500`}>
+                                {kpi.icon}
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-white/[0.03] border border-white/[0.05] flex items-center justify-center group-hover:bg-white/[0.1] transition-colors cursor-pointer">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-slate-400 group-hover:text-white transition-colors">
+                                    <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
                         </div>
-                        <p className="text-2xl sm:text-3xl font-bold text-white">{kpi.value}</p>
-                        <p className="text-xs sm:text-sm text-slate-400 mt-1">{kpi.label}</p>
+
+                        <div className="relative z-10 flex flex-col gap-1">
+                            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight group-hover:scale-[1.02] origin-left transition-transform duration-300">
+                                {kpi.value}
+                            </h3>
+                            <p className="text-xs sm:text-sm font-medium text-slate-400 uppercase tracking-widest">{kpi.label}</p>
+                        </div>
+
+                        {/* Bottom decorative line */}
+                        <div className={`absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r ${kpi.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                     </div>
                 ))}
             </div>
@@ -143,9 +165,9 @@ const Dashboard = () => {
                         <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none appearance-none cursor-pointer [&>option]:bg-[#0f172a]">
                             <option value="">All Vehicle Types</option>
-                            <option value="truck">🚛 Truck</option>
-                            <option value="van">🚐 Van</option>
-                            <option value="bike">🏍️ Bike</option>
+                            <option value="truck">Truck</option>
+                            <option value="van">Van</option>
+                            <option value="bike">Bike</option>
                         </select>
                         <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none appearance-none cursor-pointer [&>option]:bg-[#0f172a]">
@@ -195,7 +217,7 @@ const Dashboard = () => {
                                         <td className="px-4 sm:px-6 py-3.5">
                                             {trip.vehicle ? (
                                                 <div className="flex items-center gap-2">
-                                                    <span>{vehicleTypeIcons[trip.vehicle.type] || '🚗'}</span>
+                                                    <span className="flex items-center justify-center w-7 h-7 bg-white/[0.06] rounded-lg">{vehicleTypeIcons[trip.vehicle.type] || <LuCar className="text-sm text-slate-400" />}</span>
                                                     <div>
                                                         <p className="text-sm text-white font-medium">{trip.vehicle.registrationNumber}</p>
                                                         <p className="text-xs text-slate-500">{trip.vehicle.make} {trip.vehicle.model}</p>

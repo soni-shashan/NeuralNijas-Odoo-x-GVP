@@ -5,13 +5,14 @@ import {
     HiOutlinePlus, HiOutlineSearch, HiOutlineFilter, HiOutlineX,
     HiOutlineRefresh, HiOutlineTrash, HiOutlineCurrencyRupee
 } from 'react-icons/hi';
+import { LuFuel, LuRoute, LuWrench, LuSquareParking, LuClipboardList } from 'react-icons/lu';
 
 const typeStyles = {
-    fuel: { emoji: '⛽', label: 'Fuel', color: 'bg-amber-500/15 text-amber-400 border-amber-500/20' },
-    toll: { emoji: '🛣️', label: 'Toll', color: 'bg-blue-500/15 text-blue-400 border-blue-500/20' },
-    repair: { emoji: '🔧', label: 'Repair', color: 'bg-red-500/15 text-red-400 border-red-500/20' },
-    parking: { emoji: '🅿️', label: 'Parking', color: 'bg-violet-500/15 text-violet-400 border-violet-500/20' },
-    misc: { emoji: '📋', label: 'Misc', color: 'bg-slate-500/15 text-slate-400 border-slate-500/20' },
+    fuel: { icon: <LuFuel className="text-sm" />, label: 'Fuel', color: 'bg-amber-500/15 text-amber-400 border-amber-500/20' },
+    toll: { icon: <LuRoute className="text-sm" />, label: 'Toll', color: 'bg-blue-500/15 text-blue-400 border-blue-500/20' },
+    repair: { icon: <LuWrench className="text-sm" />, label: 'Repair', color: 'bg-red-500/15 text-red-400 border-red-500/20' },
+    parking: { icon: <LuSquareParking className="text-sm" />, label: 'Parking', color: 'bg-violet-500/15 text-violet-400 border-violet-500/20' },
+    misc: { icon: <LuClipboardList className="text-sm" />, label: 'Misc', color: 'bg-slate-500/15 text-slate-400 border-slate-500/20' },
 };
 
 const emptyForm = {
@@ -181,7 +182,7 @@ const ExpenseFuelLog = () => {
                                         </div>
                                     </div>
                                     {s.totalLiters > 0 && (
-                                        <p className="text-xs text-slate-500 mt-2">⛽ {s.totalLiters.toFixed(1)}L • 📏 {s.totalDistance.toLocaleString()} km</p>
+                                        <p className="text-xs text-slate-500 mt-2 flex items-center gap-1"><LuFuel className="text-amber-400" /> {s.totalLiters.toFixed(1)}L • <LuRoute className="text-blue-400" /> {s.totalDistance.toLocaleString()} km</p>
                                     )}
                                 </div>
                             ))}
@@ -199,22 +200,29 @@ const ExpenseFuelLog = () => {
                             value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             className="w-full py-2.5 pl-10 pr-4 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white text-sm outline-none placeholder-slate-600 focus:border-blue-500/50 transition-all" />
                     </form>
-                    <button onClick={() => setShowFilters(!showFilters)}
-                        className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
-              ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
-                        <HiOutlineFilter /> Filters
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setShowFilters(!showFilters)}
+                            className={`px-4 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all
+                  ${showFilters ? 'bg-blue-500/15 border-blue-500/30 text-blue-400' : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:text-white'}`}>
+                            <HiOutlineFilter /> Filters
+                        </button>
+                        {filters.type && (
+                            <button onClick={() => { setFilters({ search: '', type: '', page: 1 }); setTimeout(fetchExpenses, 50); }} className="px-3 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-all">
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
                 {showFilters && (
                     <div className="mt-3 pt-3 border-t border-white/[0.06] animate-fade-in">
                         <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value, page: 1 })}
                             className="py-2.5 px-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white outline-none [&>option]:bg-[#0f172a] w-full sm:w-auto">
                             <option value="">All Types</option>
-                            <option value="fuel">⛽ Fuel</option>
-                            <option value="toll">🛣️ Toll</option>
-                            <option value="repair">🔧 Repair</option>
-                            <option value="parking">🅿️ Parking</option>
-                            <option value="misc">📋 Misc</option>
+                            <option value="fuel">Fuel</option>
+                            <option value="toll">Toll</option>
+                            <option value="repair">Repair</option>
+                            <option value="parking">Parking</option>
+                            <option value="misc">Misc</option>
                         </select>
                     </div>
                 )}
@@ -272,7 +280,7 @@ const ExpenseFuelLog = () => {
                                             </td>
                                             <td className="px-4 sm:px-6 py-3.5">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border ${tInfo.color}`}>
-                                                    {tInfo.emoji} {tInfo.label}
+                                                    {tInfo.icon} {tInfo.label}
                                                 </span>
                                             </td>
                                             <td className="px-4 sm:px-6 py-3.5">
@@ -347,11 +355,11 @@ const ExpenseFuelLog = () => {
                                 <label className="text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">Type <span className="text-red-400">*</span></label>
                                 <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} required
                                     className={inputClass + ' appearance-none cursor-pointer [&>option]:bg-[#0f172a]'}>
-                                    <option value="fuel">⛽ Fuel</option>
-                                    <option value="toll">🛣️ Toll</option>
-                                    <option value="repair">🔧 Repair</option>
-                                    <option value="parking">🅿️ Parking</option>
-                                    <option value="misc">📋 Misc</option>
+                                    <option value="fuel">Fuel</option>
+                                    <option value="toll">Toll</option>
+                                    <option value="repair">Repair</option>
+                                    <option value="parking">Parking</option>
+                                    <option value="misc">Misc</option>
                                 </select>
                             </div>
 

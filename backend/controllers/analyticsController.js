@@ -213,7 +213,8 @@ const exportCSV = async (req, res) => {
             });
             csvContent = 'Date,Vehicle,Type,Fuel Liters,Fuel Cost,Misc Expense,Total,Distance\n';
             expenses.forEach(e => {
-                csvContent += `${e.expenseDate},${e.vehicle?.registrationNumber || ''},${e.type},${e.fuelLiters},${e.fuelCost},${e.miscExpense},${e.totalAmount},${e.distance}\n`;
+                const date = e.expenseDate ? new Date(e.expenseDate).toISOString().split('T')[0] : '';
+                csvContent += `${date},${e.vehicle?.registrationNumber || ''},${e.type},${e.fuelLiters},${e.fuelCost},${e.miscExpense},${e.totalAmount},${e.distance}\n`;
             });
         } else if (type === 'maintenance') {
             const logs = await MaintenanceLog.findAll({
@@ -224,7 +225,8 @@ const exportCSV = async (req, res) => {
             });
             csvContent = 'Date,Vehicle,Issue Type,Description,Cost,Status\n';
             logs.forEach(l => {
-                csvContent += `${l.serviceDate},${l.vehicle?.registrationNumber || ''},${l.issueType},"${(l.description || '').replace(/"/g, '""')}",${l.cost},${l.status}\n`;
+                const date = l.serviceDate ? new Date(l.serviceDate).toISOString().split('T')[0] : '';
+                csvContent += `${date},${l.vehicle?.registrationNumber || ''},${l.issueType},"${(l.description || '').replace(/"/g, '""')}",${l.cost},${l.status}\n`;
             });
         } else if (type === 'trips') {
             const trips = await Trip.findAll({
@@ -235,7 +237,9 @@ const exportCSV = async (req, res) => {
             });
             csvContent = 'Trip#,Vehicle,Driver,Origin,Destination,Cargo,Weight(kg),Status,Start,End\n';
             trips.forEach(t => {
-                csvContent += `${t.tripNumber},${t.vehicle?.registrationNumber || ''},${t.driverName || ''},${t.origin},${t.destination},${t.cargo || ''},${t.cargoWeight},${t.status},${t.startDate || ''},${t.endDate || ''}\n`;
+                const start = t.startDate ? new Date(t.startDate).toISOString().split('T')[0] : '';
+                const end = t.endDate ? new Date(t.endDate).toISOString().split('T')[0] : '';
+                csvContent += `${t.tripNumber},${t.vehicle?.registrationNumber || ''},${t.driverName || ''},${t.origin},${t.destination},${t.cargo || ''},${t.cargoWeight},${t.status},${start},${end}\n`;
             });
         }
 
