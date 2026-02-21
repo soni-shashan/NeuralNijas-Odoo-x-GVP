@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 // POST /api/auth/register
 const register = async (req, res) => {
     try {
-        const { fullName, email, password, role } = req.body;
+        const { fullName, email, phone, company, department, password, role } = req.body;
 
         // Check if user already exists
         const existingUser = await User.findOne({ where: { email } });
@@ -39,6 +39,9 @@ const register = async (req, res) => {
         const user = await User.create({
             fullName,
             email,
+            phone,
+            company,
+            department,
             password,
             role: role || 'dispatcher',
             otp,

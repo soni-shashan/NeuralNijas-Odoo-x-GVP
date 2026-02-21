@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import { HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineTruck, HiOutlineShieldCheck } from 'react-icons/hi';
-import { FiCheck } from 'react-icons/fi';
+import { HiOutlineUser, HiOutlineMail, HiOutlineLockClosed, HiOutlineTruck, HiOutlineShieldCheck, HiOutlinePhone, HiOutlineOfficeBuilding } from 'react-icons/hi';
+import { FiCheck, FiBriefcase } from 'react-icons/fi';
 
 const highlights = [
     'Real-time fleet tracking & dispatch',
@@ -21,6 +21,9 @@ const Register = () => {
     const [form, setForm] = useState({
         fullName: '',
         email: '',
+        phone: '',
+        company: '',
+        department: '',
         password: '',
         confirmPassword: '',
         role: 'dispatcher'
@@ -43,6 +46,9 @@ const Register = () => {
             const res = await authAPI.register({
                 fullName: form.fullName,
                 email: form.email,
+                phone: form.phone,
+                company: form.company,
+                department: form.department,
                 password: form.password,
                 role: form.role
             });
@@ -68,7 +74,7 @@ const Register = () => {
             </div>
 
             {/* Left Panel - Branding */}
-            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12">
+            <div className="hidden lg:flex lg:w-[45%] relative items-center justify-center p-12">
                 <div className="relative z-10 max-w-md">
                     <div className="w-16 h-16 mb-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-2xl shadow-blue-500/30 rotate-[-6deg] hover:rotate-0 transition-transform duration-500">
                         <HiOutlineTruck />
@@ -104,52 +110,78 @@ const Register = () => {
             </div>
 
             {/* Right Panel - Form */}
-            <div className="flex-1 flex items-center justify-center px-4 py-6 sm:p-10">
-                <div className="w-full max-w-[440px] animate-fade-in">
+            <div className="flex-1 flex items-center justify-center px-4 py-6 sm:p-8 lg:p-10">
+                <div className="w-full max-w-[480px] animate-fade-in">
                     {/* Mobile Logo */}
                     <div className="lg:hidden text-center mb-5">
                         <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-3xl text-white shadow-xl shadow-blue-500/25">
                             <HiOutlineTruck />
                         </div>
                         <h1 className="text-xl sm:text-2xl font-bold text-white">FleetFlow</h1>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1">Create your fleet management account</p>
                     </div>
 
                     {/* Card */}
-                    <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/[0.06] rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl">
+                    <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/[0.06] rounded-2xl sm:rounded-3xl p-5 sm:p-7 md:p-8 shadow-2xl">
                         <h2 className="text-xl sm:text-2xl font-bold text-white mb-0.5">Create Account</h2>
-                        <p className="text-slate-400 text-xs sm:text-sm mb-5 sm:mb-7">Fill in your details to get started</p>
+                        <p className="text-slate-400 text-xs sm:text-sm mb-5 sm:mb-6">Fill in all required information</p>
 
-                        <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
-                            {/* Full Name */}
-                            <div>
-                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 sm:mb-1.5 block uppercase tracking-wider">Full Name</label>
-                                <div className="relative group">
-                                    <HiOutlineUser className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                                    <input type="text" name="fullName" placeholder="Your full name" value={form.fullName} onChange={handleChange} required minLength={2} className={inputClass} />
+                        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
+                            {/* Full Name & Phone - side by side */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Full Name <span className="text-red-400">*</span></label>
+                                    <div className="relative group">
+                                        <HiOutlineUser className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <input type="text" name="fullName" placeholder="Your full name" value={form.fullName} onChange={handleChange} required minLength={2} className={inputClass} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Phone <span className="text-red-400">*</span></label>
+                                    <div className="relative group">
+                                        <HiOutlinePhone className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <input type="tel" name="phone" placeholder="9876543210" value={form.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); setForm({ ...form, phone: val }); }} required minLength={10} maxLength={10} pattern="[0-9]{10}" className={inputClass} />
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Email */}
                             <div>
-                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 sm:mb-1.5 block uppercase tracking-wider">Email</label>
+                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Email <span className="text-red-400">*</span></label>
                                 <div className="relative group">
                                     <HiOutlineMail className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                     <input type="email" name="email" placeholder="name@company.com" value={form.email} onChange={handleChange} required className={inputClass} />
                                 </div>
                             </div>
 
-                            {/* Password Row - stacks on mobile */}
+                            {/* Company & Department - side by side */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 sm:mb-1.5 block uppercase tracking-wider">Password</label>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Company</label>
+                                    <div className="relative group">
+                                        <HiOutlineOfficeBuilding className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <input type="text" name="company" placeholder="Company name" value={form.company} onChange={handleChange} className={inputClass} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Department</label>
+                                    <div className="relative group">
+                                        <FiBriefcase className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <input type="text" name="department" placeholder="e.g. Logistics" value={form.department} onChange={handleChange} className={inputClass} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Password Row */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Password <span className="text-red-400">*</span></label>
                                     <div className="relative group">
                                         <HiOutlineLockClosed className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                         <input type="password" name="password" placeholder="Min 6 chars" value={form.password} onChange={handleChange} required minLength={6} className={inputClass} />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 sm:mb-1.5 block uppercase tracking-wider">Confirm</label>
+                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Confirm <span className="text-red-400">*</span></label>
                                     <div className="relative group">
                                         <HiOutlineShieldCheck className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                         <input type="password" name="confirmPassword" placeholder="Re-enter" value={form.confirmPassword} onChange={handleChange} required minLength={6} className={inputClass} />
@@ -159,23 +191,20 @@ const Register = () => {
 
                             {/* Role Selector */}
                             <div>
-                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1.5 sm:mb-2 block uppercase tracking-wider">Select Role</label>
+                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">Select Role <span className="text-red-400">*</span></label>
                                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                                     {roles.map((role) => (
                                         <label
                                             key={role.value}
-                                            className={`relative flex flex-col items-center sm:flex-row sm:items-center gap-1.5 sm:gap-3 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all duration-300 group
+                                            className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border cursor-pointer transition-all duration-300
                         ${form.role === role.value
                                                     ? 'border-blue-500/40 bg-blue-500/[0.08] shadow-lg shadow-blue-500/5'
                                                     : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
                                                 }`}
                                         >
                                             <input type="radio" name="role" value={role.value} checked={form.role === role.value} onChange={handleChange} className="hidden" />
-                                            <span className="text-lg sm:text-xl">{role.icon}</span>
-                                            <div className="text-center sm:text-left">
-                                                <p className={`text-xs sm:text-sm font-medium ${form.role === role.value ? 'text-white' : 'text-slate-300'}`}>{role.label}</p>
-                                                <p className="text-[10px] text-slate-500 hidden sm:block">{role.desc}</p>
-                                            </div>
+                                            <span className="text-lg">{role.icon}</span>
+                                            <p className={`text-xs sm:text-sm font-medium ${form.role === role.value ? 'text-white' : 'text-slate-300'}`}>{role.label}</p>
                                             <div className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-2 h-2 rounded-full transition-all duration-300 ${form.role === role.value ? 'bg-blue-400 shadow-md shadow-blue-400/50' : 'bg-slate-700'}`} />
                                         </label>
                                     ))}
@@ -190,12 +219,6 @@ const Register = () => {
                                 {loading ? <span className="spinner" /> : 'Create Account'}
                             </button>
                         </form>
-
-                        <div className="mt-4 sm:mt-5 flex items-center gap-3">
-                            <div className="h-px flex-1 bg-white/[0.06]" />
-                            <span className="text-xs text-slate-500">OR</span>
-                            <div className="h-px flex-1 bg-white/[0.06]" />
-                        </div>
 
                         <p className="text-center text-xs sm:text-sm text-slate-400 mt-4 sm:mt-5">
                             Already have an account?{' '}
