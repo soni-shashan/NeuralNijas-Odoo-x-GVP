@@ -126,7 +126,29 @@ const Register = () => {
                         <p className="text-slate-400 text-xs sm:text-sm mb-5 sm:mb-6">Fill in all required information</p>
 
                         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
-                            {/* Full Name & Phone - side by side */}
+                            {/* Role Selector - First so it controls visible fields */}
+                            <div>
+                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">I am a <span className="text-red-400">*</span></label>
+                                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                                    {roles.map((role) => (
+                                        <label
+                                            key={role.value}
+                                            className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border cursor-pointer transition-all duration-300
+                        ${form.role === role.value
+                                                    ? 'border-blue-500/40 bg-blue-500/[0.08] shadow-lg shadow-blue-500/5'
+                                                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
+                                                }`}
+                                        >
+                                            <input type="radio" name="role" value={role.value} checked={form.role === role.value} onChange={handleChange} className="hidden" />
+                                            <span className="text-lg">{role.icon}</span>
+                                            <p className={`text-xs sm:text-sm font-medium ${form.role === role.value ? 'text-white' : 'text-slate-300'}`}>{role.label}</p>
+                                            <div className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-2 h-2 rounded-full transition-all duration-300 ${form.role === role.value ? 'bg-blue-400 shadow-md shadow-blue-400/50' : 'bg-slate-700'}`} />
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Full Name & Phone */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Full Name <span className="text-red-400">*</span></label>
@@ -153,23 +175,25 @@ const Register = () => {
                                 </div>
                             </div>
 
-                            {/* Company & Department - side by side */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Company</label>
-                                    <div className="relative group">
-                                        <HiOutlineOfficeBuilding className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                                        <input type="text" name="company" placeholder="Company name" value={form.company} onChange={handleChange} className={inputClass} />
+                            {/* Admin-only: Company & Department */}
+                            {form.role === 'admin' && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-in">
+                                    <div>
+                                        <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Company <span className="text-red-400">*</span></label>
+                                        <div className="relative group">
+                                            <HiOutlineOfficeBuilding className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                            <input type="text" name="company" placeholder="Company name" value={form.company} onChange={handleChange} required className={inputClass} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Department <span className="text-red-400">*</span></label>
+                                        <div className="relative group">
+                                            <FiBriefcase className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                            <input type="text" name="department" placeholder="e.g. Logistics" value={form.department} onChange={handleChange} required className={inputClass} />
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1 block uppercase tracking-wider">Department</label>
-                                    <div className="relative group">
-                                        <FiBriefcase className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                                        <input type="text" name="department" placeholder="e.g. Logistics" value={form.department} onChange={handleChange} className={inputClass} />
-                                    </div>
-                                </div>
-                            </div>
+                            )}
 
                             {/* Password Row */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -186,28 +210,6 @@ const Register = () => {
                                         <HiOutlineShieldCheck className="absolute top-1/2 left-3.5 sm:left-4 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                                         <input type="password" name="confirmPassword" placeholder="Re-enter" value={form.confirmPassword} onChange={handleChange} required minLength={6} className={inputClass} />
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Role Selector */}
-                            <div>
-                                <label className="text-[10px] sm:text-xs font-medium text-slate-400 mb-1.5 block uppercase tracking-wider">Select Role <span className="text-red-400">*</span></label>
-                                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
-                                    {roles.map((role) => (
-                                        <label
-                                            key={role.value}
-                                            className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border cursor-pointer transition-all duration-300
-                        ${form.role === role.value
-                                                    ? 'border-blue-500/40 bg-blue-500/[0.08] shadow-lg shadow-blue-500/5'
-                                                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
-                                                }`}
-                                        >
-                                            <input type="radio" name="role" value={role.value} checked={form.role === role.value} onChange={handleChange} className="hidden" />
-                                            <span className="text-lg">{role.icon}</span>
-                                            <p className={`text-xs sm:text-sm font-medium ${form.role === role.value ? 'text-white' : 'text-slate-300'}`}>{role.label}</p>
-                                            <div className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-2 h-2 rounded-full transition-all duration-300 ${form.role === role.value ? 'bg-blue-400 shadow-md shadow-blue-400/50' : 'bg-slate-700'}`} />
-                                        </label>
-                                    ))}
                                 </div>
                             </div>
 
